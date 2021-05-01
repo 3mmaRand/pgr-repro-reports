@@ -1,0 +1,297 @@
+---
+title: "Sotware Sutainability training for Bioscience Postgraduate students"
+author: "Emma Rand"
+institute: University of York, UK
+output:
+  bookdown::html_document2: default
+  bookdown::word_document2: default
+  html_document:
+    df_print: paged
+  bookdown::pdf_document2: default
+bibliography: reference.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.retina = 3)
+
+```
+
+```{r pkgs}
+library(tidyverse)
+library(viridisLite)
+library(kableExtra)
+library(googlesheets4)
+library(showtext)
+library(patchwork)
+```
+
+```{r palette}
+
+```
+
+# Introduction {#intro .unnumbered}
+
+I organise the Analytics training programme for PhD students on the
+```{r, fig.alt = "White Rose DTP logo", out.width="30px"}
+knitr::include_graphics("images/wr-dtp.png")
+```
+[White Rose BBSRC Doctoral Training Partnership in Mechanistic Biology](https://www.whiterose-mechanisticbiology-dtp.ac.uk/) supported by the Biotechnology and Biological Sciences Research Council (BBSRC) which, together with additional investment from the partner universities (York, Sheffield and Leeds), is currently supporting over 180 PhD studentships. The aim of the programme is to equip Early Career Researchers with the skills to make their work reproducible and sustainable. This work ties in with my
+```{r, fig.alt = "SSI logo", out.width="40px"}
+knitr::include_graphics("images/SSIWebHires.png")
+```
+[Software Sustainability Fellowship](https://www.software.ac.uk/programmes-and-events/fellowship-programme) project "*Developing the capacity of PhD students to infect their labs with reproducibility*".
+
+The programme starts in the first year with [Analytics 1: An introduction to Reproducible Research in R](https://www.whiterose-mechanisticbiology-dtp.ac.uk/training-and-events/archive/analytics-1-introduction-to-reproducible-analyses-in-r-7th-to-19th-april-2021/) [@emma_rand_2021_4701167] and continues in the second year with [Analytics 2: Analysis of high-throughput biological data in R](https://www.whiterose-mechanisticbiology-dtp.ac.uk/training-and-events/upcoming/analytics-r-2-analysis-of-high-throughput-biological-data-in-r-21st-april-to-4th-may-2021/) taught by [Mark Dunning](https://sbc.shef.ac.uk/team/mark/) of [The Sheffield Bioinformatics Core Facility](https://sbc.shef.ac.uk./).
+
+This article covers the rationale behind the design of Analytics 1 and the experience level and current tool preferences of participants.
+
+```{r}
+# gs4_auth() run interactively
+file <- "https://docs.google.com/spreadsheets/d/11Xx7FLNiure8jF-ti3DNKCj53j3eC8hgMYXA3crvT3I/edit#gid=184416414"
+survey <- read_sheet(file)
+# add a column for year
+survey <- survey %>% 
+  mutate(year = if_else(Timestamp > "2020-12-31", "2021", "2020"))
+
+list_n_2020 <- 56
+list_n_2021 <- 57
+
+survey_n_2020 <- table(survey$year)["2020"]
+survey_n_2021 <- table(survey$year)["2021"]
+
+
+
+```
+
+# About the course {#about-course .unnumbered}
+
+[Analytics 1: An introduction to Reproducible Research in R](https://www.whiterose-mechanisticbiology-dtp.ac.uk/training-and-events/archive/analytics-1-introduction-to-reproducible-analyses-in-r-7th-to-19th-april-2021/) has been running, online, for two years and there were `r list_n_2020` participants in 2020 and `r list_n_2021` in 2021.
+
+There are the challenges in training first year postgraduate bioscientists on this programme. They have first degrees in any science, computing or mathematics from a variety of universities worldwide and therefore have a wide range of previous coding experiences. They may be completely new to programming or have used statistical or general purpose languages for several years. However, they have a common interest in data analysis and visualisation so these are useful entry points for sustainable software practice.
+
+There are many statistical and visualisation methods applied in the biosciences and PhD projects are at an early stage so a person may not yet know which methods will be applicable. It is this diversity in both experience and requirements that has led me to shape the programme around workflow tools with widespread application for any biologist rather than teaching a selection of statistical methods which will have variable utility. These tools are:
+
+-   project-oriented workflow and organisation,
+-   foundational computational concepts,
+-   data organisation, import and reformatting and
+-   reproducible reporting.
+
+These topics have been chosen because they are foundational, widely applicable and largely transferable between coding environments.
+
+We use R [@R-core] because is a free and open source language especially well-suited to data analysis and visualisation which is our route in to sustainable software practice for bioscientists. In addition, R has a relatively inclusive and newbie-friendly community and a reputation for "cater[ing] to users who do not see themselves as programmers, but then allow[ing] them to slide gradually into programming" [@Peng2018-bf]. R is thus an effective tool to introduce people to sustainable software practices, but the topics covered have more general applicability in the organisation and documentation of computational projects.
+
+The programme comprises six modules lasting from 40 minutes to 2.5 hours. Participants are advised to attend the sessions that extend their skills. All the materials are licensed under a
+```{r, fig.alt = "Creative Commons logo", out.width="50px"}
+knitr::include_graphics("images/ccby.png")
+```
+[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/) and available on [GitHub](https://github.com/3mmaRand/pgr_reproducibility).
+
+## Modules {#modules .unnumbered}
+
+1.  [Introduction and Principles of reproducibility](https://3mmarand.github.io/pgr_reproducibility/slides/01_intro_and_principles_of_repro.html) 40 mins
+
+    Presents a rationale working reproducibly, scripting analysis and an overview of project organisation.
+
+2.  [Introduction to R and working with data](https://3mmarand.github.io/pgr_reproducibility/slides/02_intro_to_r_and_working_with_data.html) 2 - 2.5 hr
+
+    An introduction for participants who are completely new to R which covers finding their way round RStudio importing some data, summarising and plotting it. It provides a first contact
+
+3.  [RStudio Projects](https://3mmarand.github.io/pgr_reproducibility/slides/03_rstudio_projects.html) 45 mins
+
+    About Project-oriented workflow, working directories and paths, project organisation and naming things! Over many years in teaching computational biology I have seen many people struggle not because of the analysis itself but because the ideas of working directory and paths are unfamiliar. This can cause a lot of stress
+
+4.  [Tidying data and the tidyverse including the pipe](https://3mmarand.github.io/pgr_reproducibility/slides/04_tidying_data_and_the_tidyverse.html) 1.5 - 2 hr
+
+    What tidy data are and how they make your life easier along with an introduction to the tidyverse [@Wickham2019-ml] and walk-through of some commonly applied tidying operations using a case study from [The Genever lab](https://www.geneverlab.info/) on stem cell proteomic data. I love this example - the data format typifies that seen in high throughput data with column headers over mutliple rows, genes/proteins/transcripts in rows and treatment groups and replicates in columns.
+
+5.  [Advanced data import](https://3mmarand.github.io/pgr_reproducibility/slides/05_advanced_data_import.html) 2 - 2.5 hr
+
+    The aim of this session is to strength the ability to import data files regardless of the formatting and to introduce some of the other ways to import data such as through web scraping and via APIs.
+
+6.  [R Markdown for Reproducible Reports](https://3mmarand.github.io/pgr_reproducibility/slides/06_r_markdown_for_reproducible_reports.html) 2 - 2.5 hr
+
+    To induct people into the wonderful world of R Markdown [@Xie2018-mc] for creating reproducible reports in a variety of output formats.
+
+## Learning outcomes {#learning-outcomes .unnumbered}
+
+After this training the successful learner will be able to:
+
+-   Find their way around the RStudio windows
+-   Create and plot data using the base package and ggplot
+-   Explain the rationale for scripting analysis
+-   Use the help pages
+-   Know how to make additional packages available in an R session
+-   Reproducibly import data in a variety of formats
+-   Understand what is meant by the working directory, absolute and relative paths and be able to apply these concepts to data import
+-   Summarise data in a single group or in multiple groups
+-   Recognise tidy data format and carry out some typical data tidying tasks
+-   Develop highly organised analyses including well-commented scripts that can be understood by future you and others
+-   Use R Markdown to produce reproducible analyses, figures and reports
+
+# About the participants {#about-participants .unnumbered}
+
+Since I expect the participants to vary in their previous experience, I ask them complete this short  [form](https://forms.gle/cpSjdcjVa7niz6iq5) to help me understand their diversity and direct them to modules appropriate to their experience. The response rates are good and I hope to be able to collect this data for several years to understand the changing landscape of sustainable software practice amongst new PhD students.
+
+There were `r survey_n_2020` responding in 2020 (`r round(survey_n_2020/list_n_2020 * 100, 1)`%) and `r survey_n_2021` in 2021 (`r round(survey_n_2021/list_n_2021 * 100, 1)`%)
+
+## Current experience {#previous-r .unnumbered}
+```{r}
+df <- survey %>%
+  select(year,
+         R = `Please rate your expertise in R`,
+         Other = `Please rate your expertise in the non-R language you consider yourself most competent.`) %>% 
+  pivot_longer(cols = -year, values_to = "Rating", names_to = "lang") 
+
+df2 <- df %>% 
+  group_by(year = factor(year),
+           Rating = Rating,
+           lang = factor(lang,levels = c("R", "Other"), ordered = TRUE), 
+           .drop = FALSE) %>% 
+  tally()
+```
+
+
+
+About a third of the group has no previous experience in R with another 20-25% having a little. Experience of other languages is less common (See figure \@ref(fig:r-prev-exp)) and most  are not at all comfortable or a bit uncomfortable with the idea of working directories and and paths (See figure \@ref(fig:wd)).
+
+```{r r-prev-exp, fig.cap="Participants self-rated experience of R (left) and their best other language (right) before the training. Rating 1 = 'None, never used', 10 = 'Expert - extensive use for several years'"}
+
+df2 %>%
+  ggplot(aes(x = Rating, y = n, fill = year)) +
+  geom_col(position = position_dodge(), width = 0.8) +
+  scale_fill_manual(values = c("#64c0d2", "#d264c0"), name = "") +
+  scale_x_continuous(name = "Self-rated experience",
+                     expand = c(0, 0),
+                     breaks = 1:10,
+                     limits = c(0.5, 11)) +
+  scale_y_continuous(name = "Number of people",
+                     expand = c(0, 0),
+                     breaks = c(0, 5, 10, 15, 20, 25, 30),
+                     limits = c(0, 30)) +
+  facet_wrap(. ~lang) +
+  theme_classic() +
+  theme(plot.background = element_blank(),
+        axis.title = element_text(size = 10),
+        axis.text = element_text(size = 10),
+        axis.line = element_line(size = 1),
+        axis.ticks.x = element_blank(),
+        legend.position = c(0.9, 0.8),
+        legend.key.size = unit(0.8, 'cm'),
+        strip.text = element_text(size = 10),
+        strip.background = element_rect(colour = NA))
+```
+```{r wd, fig.cap="The comfort expressed by particpants about working directories and paths"}
+
+wd <- survey %>% select(paths = `Please rate your level of comfort with the following in R [working directories, relative and absolute paths]`,
+                        year = year)
+my_levels <- c("Not at all comfortable",
+               "A bit uncomfortable",
+               "Quite comfortable",
+               "Completely comfortable")
+wd$paths <- factor(wd$paths, levels = my_levels)
+
+wd %>% group_by(year, paths) %>% tally() %>% 
+  ggplot(aes(x = paths, y = n, fill = year)) +
+  geom_col(position = position_dodge(), width = 0.8) +
+  scale_fill_manual(values = c("#64c0d2", "#d264c0"), name = "") +
+  scale_x_discrete(name = "Please rate your level of comfort with working directories, relative and absolute paths") +
+  scale_y_continuous(name = "Number of people",
+                     expand = c(0, 0),
+                     breaks = c(0, 5, 10, 15, 20, 25),
+                     limits = c(0, 30)) +
+  theme_classic() +
+  theme(plot.background = element_blank(),
+        axis.title = element_text(size = 10),
+        axis.text.y = element_text(size = 10),
+        axis.text.x = element_text(size = 10),
+        axis.line = element_line(size = 1),
+        axis.ticks.x = element_blank(),
+        legend.position = c(0.9, 0.9),
+        legend.key.size = unit(0.8, 'cm'))
+```
+
+
+
+## Current tools {#current-tools .unnumbered}
+
+The programmes people are most likely for use for data analysis and visualisation before they start the course are R, Excel (or its equivalents) and GraphPad Prism (See figure \@ref(fig:data-analysis-pkg)). In coming years, it will be interesting to see if the increased use of R, Python and Excel and decreased use of Prism and SPSS between 2020 and 2021 reflect a trend or simply random cohort variation.
+
+```{r data-analysis-pkg, fig.cap="Responses of participants to 'In what package/programme are you MOST likely to carry out data analysis and visualisation currently?'"}
+df <- survey %>% group_by(package = factor(`In what package/programme are you MOST likely to carry out data analysis and visualisation currently?`),
+                          year = factor(year),
+                          .drop = FALSE) %>%  tally()
+df %>%
+  ggplot(aes(x = reorder(package, n), y = n, fill = year)) +
+  geom_col(position = position_dodge(), width = 0.8) +
+  scale_fill_manual(values = c("#64c0d2", "#d264c0"), name = "") +
+  scale_x_discrete(name = "",
+                   label = c("None",
+                             "SAS or\nSTATA",
+                             "Other",
+                             "MATLAB",
+                             "Minitab",
+                             "Python",
+                             "SPSS",
+                             "GraphPad\nPrism",
+                             "Excel\nGoogle\nsheets or\nequivalent",
+                             "R")) +
+  scale_y_continuous(name = "Number of people",
+                     expand = c(0, 0),
+                     breaks = c(0, 5, 10, 15, 20),
+                     limits = c(0, 20)) +
+  theme_classic() +
+  theme(plot.background = element_blank(),
+        axis.title = element_text(size = 10),
+        axis.text = element_text(size = 10),
+        axis.line = element_line(size = 1),
+        axis.ticks.x = element_blank(),
+        legend.position = c(0.1, 0.9),
+        legend.key.size = unit(0.8, 'cm'))
+```
+
+```{r}
+df <- survey %>% 
+  filter(`In what package/programme are you MOST likely to carry out data analysis and visualisation currently?` == "R", year == 2021) %>% 
+  group_by(pkg = `In what package/programme are you MOST likely to write up analysis results to submit to a journal or similar?`, year) %>% 
+ tally()
+r_users2021 <- sum(df$n)
+rmark_users2021 <- df$n[df$pkg == "R/R Markdown"]
+```
+
+Word, Googledocs or their equivalents are by far the most commonly used programmes for writing up analysis results to submit to a journal or similar (See figure \@ref(fig:write-pkg)). In 2021, there were `r r_users2021` people who would use R for data analysis but only `r rmark_users2021` of these would use RMarkdown for reporting. I hope I managed to persuade these, at least, that R Markdown would benefit their workflow.
+
+```{r write-pkg, fig.cap="Responses of participants to 'In what package/programme are you MOST likely to write up analysis results to submit to a journal or similar?'"}
+df <- survey %>% group_by(package = factor(`In what package/programme are you MOST likely to write up analysis results to submit to a journal or similar?`),
+                          year = factor(year),
+                          .drop = FALSE) %>%  tally()
+df %>%
+  ggplot(aes(x = reorder(package, n,), y = n, fill = year)) +
+  geom_col(position = position_dodge(), width = 0.8) +
+  scale_fill_manual(values = c("#64c0d2", "#d264c0"), name = "") +
+  scale_x_discrete(name = "", 
+                   labels = c("Jupyter\nNotebook",
+                              "LateX",
+                              "R Markdown",
+                              "Word, Google\ndocs or\nequivalent")) +
+  scale_y_continuous(name = "Number of people",
+                     expand = c(0, 0),
+                     breaks = c(0, 10, 20, 30, 40, 50),
+                     limits = c(0, 55)) +
+  theme_classic() +
+  theme(plot.background = element_blank(),
+        axis.title = element_text(size = 10),
+        axis.text = element_text(size = 10),
+        axis.line = element_line(size = 1),
+        axis.ticks.x = element_blank(),
+        legend.position = c(0.1, 0.9),
+        legend.key.size = unit(0.8, 'cm')) 
+```
+
+In summary, the programme focuses on workflow tools which will be useful to those with no experience of R or other languages. Whilst some participants enter the programme with a little R experience, many have none and use primarily Excel or GraphPad Prism for analysis. Even amongst the R users, the dominant writing packages are Word and its equivalents. An aim of the programme is to encourage  people to use more reproducible reporting workflows such as R Markdown.
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Creative Commons License" style="border-width:0"/></a><br />[White Rose BBSRC Doctoral Training Partnership (DTP) in Mechanistic Biology Analytics 1: Introduction to reproducible analyses in R]{xmlns:dct="http://purl.org/dc/terms/" property="dct:title"} by [Emma Rand]{xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName"} is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>. [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3859819.svg)](https://doi.org/10.5281/zenodo.3859819)
+
+# References
