@@ -3,8 +3,8 @@ title: "Sotware Sutainability training for Bioscience Postgraduate students"
 author: "Emma Rand"
 institute: University of York, UK
 output:
-  bookdown::html_document2: default
   bookdown::word_document2: default
+  bookdown::html_document2: default
   html_document:
     df_print: paged
   bookdown::pdf_document2: default
@@ -97,11 +97,11 @@ knitr::include_graphics("images/ccby.png")
 
 2.  [Introduction to R and working with data](https://3mmarand.github.io/pgr_reproducibility/slides/02_intro_to_r_and_working_with_data.html) 2 - 2.5 hr
 
-    An introduction for participants who are completely new to R which covers finding their way round RStudio importing some data, summarising and plotting it. It provides a first contact
+    An introduction for participants who are completely new to R which covers finding their way round RStudio importing some data, summarising and plotting it. It provides a first contact with ideas explored in more detail in later modules such as RStudio Projects, data import, tidy data and data reformatting.
 
 3.  [RStudio Projects](https://3mmarand.github.io/pgr_reproducibility/slides/03_rstudio_projects.html) 45 mins
 
-    About Project-oriented workflow, working directories and paths, project organisation and naming things! Over many years in teaching computational biology I have seen many people struggle not because of the analysis itself but because the ideas of working directory and paths are unfamiliar. This can cause a lot of stress
+    About Project-oriented workflow, working directories and paths, project organisation and naming things! Over many years in teaching computational biology I have seen many people struggle not because of the analysis itself but because the ideas of working directory and paths are unfamiliar. This can cause a lot of stress and gives people the impression the computational analysis is too hard for them when they just have a small knowledge gap. Plugging this gap is very empowering!
 
 4.  [Tidying data and the tidyverse including the pipe](https://3mmarand.github.io/pgr_reproducibility/slides/04_tidying_data_and_the_tidyverse.html) 1.5 - 2 hr
 
